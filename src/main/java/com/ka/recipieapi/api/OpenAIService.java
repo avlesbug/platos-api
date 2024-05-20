@@ -1,5 +1,6 @@
 package com.ka.recipieapi.api;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -22,7 +23,7 @@ public class OpenAIService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-//    @Value("${openai.api.key}")
+    @Value("${openai.api.key}")
     private String apiKey;
 
     private static final String OPENAI_API_URL = "https://api.openai.com/v1/engines/gpt-3.5-turbo-instruct/completions";
@@ -30,7 +31,7 @@ public class OpenAIService {
     public OpenAIService(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
-        this.apiKey = "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";
+//        this.apiKey = "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";
     }
 
     public String getCompletion(String message) {
