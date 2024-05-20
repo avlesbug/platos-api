@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,7 @@ public class RecipieController {
 
 
     @GetMapping("api/recipe")
+    @CrossOrigin(origins = {"https://recipie-b8629.web.app/"})
     public String getCompletion(@RequestParam String prompt) {
         try {
             return openAIService.getCompletion(recipeCollectorService.getPlainTextFromUrl(prompt));
