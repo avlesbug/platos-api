@@ -34,6 +34,7 @@ public class OpenAIService {
     }
 
     public String getCompletion(String message) {
+        System.out.println("apiKey: "  + apiKey);
         String url = "https://api.openai.com/v1/chat/completions";
         String initialPrompt = "Din jobb er å lese den gitt oppskriften og gjengi den som en json fil på det gitte formatet. Du skal ikke endre på noen av ingrediensene, mengdene eller instruksene. Her er json formatet du alltid må bruke: {name\": \"string\", \"portions\": number,\"ingredients\": [\"string\"],\"instructions\": [\"string\"]}. Oppskrift som json objekt: ";
 
