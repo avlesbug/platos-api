@@ -18,13 +18,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
-@Lazy
 public class OpenAIService {
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    @Value("${OPEN_AI_KEY}")
+    @Value("${open.ai.key}")
     private String apiKey;
 
     @Autowired
@@ -39,7 +38,7 @@ public class OpenAIService {
     }
 
     public String getCompletion(String message) {
-        String openAiKey = env.getProperty("OPEN_AI_KEY");
+        String openAiKey = env.getProperty("open.ai.key");
         System.out.println("Open AI Key: " + openAiKey);
         System.out.println("apiKey: "  + apiKey);
         String url = "https://api.openai.com/v1/chat/completions";
