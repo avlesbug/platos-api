@@ -26,8 +26,10 @@ public class OpenAIService {
     @Value("${open.ai.url}")
     private String OPENAI_API_URL;
 
-    @Value("${open.ai.prompt}")
-    private String OPENAI_API_PROMPT;
+    private String OPENAI_API_PROMPT = "Din jobb er aa lese den gitt oppskriften og gjengi den som en json fil på det gitte s formatet.\\\n"
+        + "  Du skal ikke endre på noen av ingrediensene, mengdene eller instruksene. \\\n"
+        + "  Her er json formatet du alltid maa bruke: {name\": \"string\", \"portions\": number,\"ingredients\": [\"string\"],\"instructions\": [\"string\"]}. \\\n"
+        + "  Oppskrift som json objekt:";
 
 
     public OpenAIService(RestTemplate restTemplate, ObjectMapper objectMapper) {
