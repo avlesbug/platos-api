@@ -21,9 +21,14 @@ public class OpenAIService {
     private final ObjectMapper objectMapper;
 
     @Value("${open.ai.key}")
-    private String apiKey;
+    private String OPENAI_API_KEY;
 
-    private static final String OPENAI_API_URL = "https://api.openai.com/v1/engines/gpt-3.5-turbo-instruct/completions";
+    @Value("${open.ai.url}")
+    private String OPENAI_API_URL;
+
+    @Value("${open.ai.prompt}")
+    private String OPENAI_API_PROMPT;
+
 
     public OpenAIService(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
@@ -31,12 +36,10 @@ public class OpenAIService {
     }
 
     public String getCompletion(String message) {
-        String url = "https://api.openai.com/v1/chat/completions";
-        String initialPrompt = "Din jobb er å lese den gitt oppskriften og gjengi den som en json fil på det gitte formatet. Du skal ikke endre på noen av ingrediensene, mengdene eller instruksene. Her er json formatet du alltid må bruke: {name\": \"string\", \"portions\": number,\"ingredients\": [\"string\"],\"instructions\": [\"string\"]}. Oppskrift som json objekt: ";
-
+        System.out.println("Logging: key: " + OPENAI_API_KEY + ", url: " + OPENAI_API_URL + ", prompt: " + OPENAI_API_PROMPT);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
-        headers.set("Authorization", "Bearer " + apiKey);
+        headers.set("Authorization", "Bearer " + OPENAI_API_KEY);
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("model", "gpt-4o");
@@ -48,14 +51,14 @@ public class OpenAIService {
 
         Map<String, String> messageContent = new HashMap<>();
         messageContent.put("role", "user");
-        messageContent.put("content", initialPrompt + message);
+        messageContent.put("content", OPENAI_API_PROMPT + message);
 
         requestBody.put("messages", new Map[]{messageContent});
         requestBody.put("temperature", 0.0);
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(OPENAI_API_URL, HttpMethod.POST, entity, String.class);
 
         return extractContentFromResponse(response.getBody());
     }
