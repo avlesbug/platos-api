@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ka.recipieapi.types.BaseRecipe;
 
 @Service
 public class OpenAIService {
@@ -26,9 +27,9 @@ public class OpenAIService {
     @Value("${open.ai.url}")
     private String OPENAI_API_URL;
 
-    private String OPENAI_API_PROMPT = "Din jobb er aa lese den gitt oppskriften og gjengi den som en json fil på det gitte s formatet.\\\n"
+    private String OPENAI_API_PROMPT = "Din jobb er aa lese den gitt oppskriften og gjengi den som en json fil på det gitte formatet.\\\n"
         + "  Du skal ikke endre på noen av ingrediensene, mengdene eller instruksene. \\\n"
-        + "  Her er json formatet du alltid maa bruke: {name\": \"string\", \"portions\": number,\"ingredients\": [\"string\"],\"instructions\": [\"string\"]}. \\\n"
+        + "  Her er json formatet du alltid maa bruke: {name\": \"string\", \"portions\": number, \"totalTime\": number,\"ingredients\": [\"string\"],\"instructions\": [\"string\"]}. \\\n"
         + "  Oppskrift som json objekt:";
 
 
@@ -37,8 +38,7 @@ public class OpenAIService {
         this.objectMapper = objectMapper;
     }
 
-    public String getCompletion(String message) {
-        System.out.println("Logging: key: " + OPENAI_API_KEY + ", url: " + OPENAI_API_URL + ", prompt: " + OPENAI_API_PROMPT);
+    public BaseRecipe getCompletion(String message) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
         headers.set("Authorization", "Bearer " + OPENAI_API_KEY);
@@ -62,7 +62,20 @@ public class OpenAIService {
 
         ResponseEntity<String> response = restTemplate.exchange(OPENAI_API_URL, HttpMethod.POST, entity, String.class);
 
-        return extractContentFromResponse(response.getBody());
+        String recipeAsString = extractContentFromResponse(response.getBody());
+
+        System.out.println("Response: " + response.getBody());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        BaseRecipe recipe = null;
+        try {
+            recipe = objectMapper.readValue(recipeAsString, BaseRecipe.class);
+            System.out.println(recipe);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return recipe;
     }
 
     private String extractContentFromResponse(String responseBody) {
