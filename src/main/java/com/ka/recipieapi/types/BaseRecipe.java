@@ -1,6 +1,7 @@
 package com.ka.recipieapi.types;
 
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -14,7 +15,6 @@ import lombok.Setter;
 public class BaseRecipe {
     private String name;
     private int portions;
-    private String totalTime;
     private List<String> ingredients;
     private List<String> instructions;
 
@@ -25,13 +25,11 @@ public class BaseRecipe {
     // Parameterized constructor
     @JsonCreator
     public BaseRecipe(@JsonProperty("name") String name,
-        @JsonProperty("portions") int portions,
-        @JsonProperty("totalTime") String totalTime,
+        @JsonProperty("recipeYield") int portions,
         @JsonProperty("ingredients") List<String> ingredients,
         @JsonProperty("instructions") List<String> instructions) {
         this.name = name;
         this.portions = portions;
-        this.totalTime = totalTime;
         this.ingredients = ingredients;
         this.instructions = instructions;
     }
@@ -39,8 +37,7 @@ public class BaseRecipe {
     public RecipeDto toRecipeDto(String imageUrl) {
         return RecipeDto.builder()
             .name(name)
-            .recipeYield(portions)
-            .totalTime(totalTime)
+            .portions(portions)
             .recipeIngredient(ingredients)
             .recipeInstructions(instructions)
             .image(imageUrl)
