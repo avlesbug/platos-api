@@ -37,8 +37,7 @@ public class RecipieController {
 
 
     @GetMapping("api/recipe")
-//    @CrossOrigin(origins = {"https://recipie-b8629.web.app/"})
-    @CrossOrigin(origins = {"http://localhost:3000"})
+    @CrossOrigin(origins = "${cors.allowed.origins}")
     public RecipeDto getCompletion(@RequestParam String url) {
         System.out.println("url: " + url);
         BaseRecipe recipe;
@@ -63,7 +62,6 @@ public class RecipieController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        return recipe;
 
         RecipeDto recipeDto = recipe.toRecipeDto(imageUrl);
 
@@ -71,7 +69,7 @@ public class RecipieController {
     }
 
     @GetMapping("api/download-image")
-    @CrossOrigin(origins = {"http://localhost:3000"})
+    @CrossOrigin(origins = "${cors.allowed.origins}")
     public ResponseEntity<byte[]> downloadImage(@RequestParam String imageUrl) {
         try {
             Path tempFilePath;
@@ -92,8 +90,7 @@ public class RecipieController {
     }
 
     @GetMapping("api/recipe/mock")
-//    @CrossOrigin(origins = {"https://recipie-b8629.web.app/"})
-    @CrossOrigin(origins = {"http://localhost:3000"})
+    @CrossOrigin(origins = "${cors.allowed.origins}")
     public void getCompletionMock(@RequestParam String url) {
         String recipeAsString = "{\n"
             + "  \"name\": \"Lasagne\",\n"
@@ -151,7 +148,7 @@ public class RecipieController {
     }
 
     @GetMapping("api/image")
-    @CrossOrigin(origins = {"http://localhost:3000"})
+    @CrossOrigin(origins = "${cors.allowed.origins}")
     public String getImage(@RequestParam String url, @RequestParam String title) {
         try {
             return recipeCollectorService.getImageWithAltFromMain(url,title);
