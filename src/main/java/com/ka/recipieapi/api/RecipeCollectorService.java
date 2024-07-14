@@ -59,7 +59,7 @@ public class RecipeCollectorService {
             }
         }
 
-        return "No image with alt text containing '" + title + "' found inside the main tag.";
+        return "NoImage";
     }
 
     public RecipeDto getRecipeFromUrl(String url) throws NoSuchAlgorithmException, KeyManagementException {
