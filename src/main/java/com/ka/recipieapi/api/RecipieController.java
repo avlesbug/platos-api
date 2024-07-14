@@ -3,6 +3,7 @@ package com.ka.recipieapi.api;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyManagementException;
@@ -16,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,10 +56,9 @@ public class RecipieController {
             throw new NoSuchElementException();
         }
 
-        String imageUrl = "Picture not found";
+        String imageUrl = "NoImage";
         try {
             if(recipe != null) {
-                System.out.println("Trying to get image with the title: " + recipe.getName());
                 imageUrl = recipeCollectorService.getImageWithAltFromMain(url,recipe.getName());
             }
         } catch (Exception e) {
@@ -68,9 +70,9 @@ public class RecipieController {
         return recipeDto;
     }
 
-    @GetMapping("api/download-image")
+    @PostMapping("api/download-image")
     @CrossOrigin(origins = "${cors.allowed.origins}")
-    public ResponseEntity<byte[]> downloadImage(@RequestParam String imageUrl) {
+    public ResponseEntity<byte[]> downloadImage(@RequestBody String imageUrl) {
         try {
             Path tempFilePath;
             tempFilePath = Files.createTempFile("downloaded-image", ".jpg");
@@ -85,7 +87,7 @@ public class RecipieController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + downloadedFile.getName() + "\"")
                 .body(imageBytes);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(null);
+            return ResponseEntity.status(404).body("NoImage".getBytes(StandardCharsets.UTF_8));
         }
     }
 

@@ -1,30 +1,30 @@
 package com.ka.recipieapi.api;
 
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.http.ResponseEntity;
 import java.io.File;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.springframework.stereotype.Service;
 
 @Service
 public class ImageDownloadService {
 
-    private final RestTemplate restTemplate;
-
-    public ImageDownloadService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
-
     public File downloadImage(String imageUrl, String destinationFilePath) throws Exception {
-        // Make HTTP GET request to fetch image
-        ResponseEntity<byte[]> response = restTemplate.getForEntity(imageUrl, byte[].class);
+        HttpClient client = HttpClient.newHttpClient();
 
-        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-            // Convert response to byte array and save to file
-            byte[] imageBytes = response.getBody();
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(imageUrl))
+            .build();
+
+        HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+
+        if (response.statusCode() == 200) {
+            byte[] imageBytes = response.body();
             Path destinationPath = Paths.get(destinationFilePath);
             Files.write(destinationPath, imageBytes);
             return destinationPath.toFile();
