@@ -38,6 +38,7 @@ public class RecipeCollectorService {
 
     public String getImageWithAltFromMain(String urlString, String title) throws IOException, NoSuchAlgorithmException,
         KeyManagementException {
+        System.out.println("Trying to get image with alt from " + urlString);
         trustManager();
 
         // Now you can access the URL
@@ -49,13 +50,34 @@ public class RecipeCollectorService {
             // First, search for an image with alt text exactly equal to the title
             Element imageWithExactAlt = mainTag.selectFirst("img[alt=" + title + "]");
             if (imageWithExactAlt != null) {
-                return imageWithExactAlt.absUrl("src");
+                String src = imageWithExactAlt.absUrl("src");
+                if (!src.isEmpty() && !src.startsWith("data:")) {
+                    return src;
+                }
             }
 
             // If no exact match is found, search for images with alt text containing the title
             Element imageWithAlt = mainTag.selectFirst("img[alt*=" + title + "]");
             if (imageWithAlt != null) {
-                return imageWithAlt.absUrl("src");
+                String src = imageWithAlt.absUrl("src");
+                if (!src.isEmpty() && !src.startsWith("data:")) {
+                    return src;
+                }
+            }
+
+            // If the main img tag contains a data URL, check the noscript tag
+            Element noscriptTag = mainTag.selectFirst("noscript");
+            if (noscriptTag != null) {
+                // Parse the content of the noscript tag
+                Document noscriptDoc = Jsoup.parse(noscriptTag.html());
+                Element noscriptImage = noscriptDoc.selectFirst("img[alt=" + title + "]");
+                if (noscriptImage != null) {
+                    return noscriptImage.absUrl("src");
+                }
+                noscriptImage = noscriptDoc.selectFirst("img[alt*=" + title + "]");
+                if (noscriptImage != null) {
+                    return noscriptImage.absUrl("src");
+                }
             }
         }
 
