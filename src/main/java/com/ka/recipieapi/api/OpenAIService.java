@@ -29,7 +29,7 @@ public class OpenAIService {
 
     private String OPENAI_API_PROMPT = "Din jobb er aa lese den gitt oppskriften og gjengi den som en json fil på det gitte formatet.\\\n"
         + "  Du skal ikke endre på noen av ingrediensene, mengdene eller instruksene. \\\n"
-        + "  Her er json formatet du alltid maa bruke: {name\": \"string\", \"portions\": number,\"ingredients\": [\"string\"],\"instructions\": [\"string\"]}. \\\n"
+        + "  Her er json formatet du alltid maa bruke: {\"name\": string, \"portions\": number,\"ingredients\": {\"quantity\": number | null\", \"ingredient\": string}],\"instructions\": [string]}. \\\n"
         + "  Oppskrift som json objekt:";
 
 

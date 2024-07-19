@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jsoup.parser.Parser;
+
 public class RecipeInstructionsDeserializer extends JsonDeserializer<List<String>> {
 
     @Override
@@ -25,17 +27,23 @@ public class RecipeInstructionsDeserializer extends JsonDeserializer<List<String
         if (node.isArray()) {
             for (JsonNode item : node) {
                 if (item.has("text")) {
-                    instructions.add(item.get("text").asText());
+                    instructions.add(
+                    Parser.unescapeEntities(
+                        item.get("text").asText(), true));
                 } else if (item.isTextual()) {
-                    instructions.add(item.asText());
+                    instructions.add(
+                        Parser.unescapeEntities(item.asText(), true));
                 } else if (item.has("itemListElement")) {
                     extractInstructionsRecursive(item.get("itemListElement"), instructions);
                 }
             }
         } else if (node.has("text")) {
-            instructions.add(node.get("text").asText());
+            instructions.add(
+                Parser.unescapeEntities(
+                    node.get("text").asText(), true));
         } else if (node.isTextual()) {
-            instructions.add(node.asText());
+            instructions.add(
+                Parser.unescapeEntities(node.asText(), true));
         } else if (node.has("itemListElement")) {
             extractInstructionsRecursive(node.get("itemListElement"), instructions);
         }

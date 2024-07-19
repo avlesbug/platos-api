@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.ka.recipieapi.deserializers.ImageDeserializer;
-import com.ka.recipieapi.deserializers.RecipeIngredientsDeserializer;
 import com.ka.recipieapi.deserializers.RecipeInstructionsDeserializer;
 import com.ka.recipieapi.deserializers.RecipeYieldDeserializer;
 
@@ -21,23 +20,23 @@ import lombok.ToString;
 @Setter
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RecipeDto {
+public class RecipeJson {
     private String name;
     @JsonDeserialize(using = RecipeYieldDeserializer.class)
     private Object portions;
-    @JsonDeserialize(using = RecipeIngredientsDeserializer.class)
-    private List<IngredientObject> recipeIngredient;
+    private List<String> recipeIngredient;
     @JsonDeserialize(using = RecipeInstructionsDeserializer.class)
     private List<String> recipeInstructions;
     @JsonDeserialize(using = ImageDeserializer.class)
     private String image;
 
-    public RecipeDto() { }
+    public RecipeJson() {
+    }
 
     @JsonCreator
-    public RecipeDto(@JsonProperty("name") String name,
+    public RecipeJson(@JsonProperty("name") String name,
         @JsonProperty("recipeYield") @JsonDeserialize(using = RecipeYieldDeserializer.class) Object recipeYield,
-        @JsonProperty("ingredients") @JsonDeserialize(using = RecipeIngredientsDeserializer.class) List<IngredientObject> recipeIngredient,
+        @JsonProperty("ingredients") List<String> recipeIngredient,
         @JsonProperty("instructions") @JsonDeserialize(using = RecipeInstructionsDeserializer.class)
         List<String> recipeInstructions,
         @JsonProperty("image") @JsonDeserialize(using = ImageDeserializer.class) String image) {

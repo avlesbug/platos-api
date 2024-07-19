@@ -15,7 +15,7 @@ import lombok.Setter;
 public class BaseRecipe {
     private String name;
     private int portions;
-    private List<String> ingredients;
+    private List<IngredientObject> ingredients;
     private List<String> instructions;
 
     // Default constructor
@@ -26,7 +26,7 @@ public class BaseRecipe {
     @JsonCreator
     public BaseRecipe(@JsonProperty("name") String name,
         @JsonProperty("recipeYield") int portions,
-        @JsonProperty("ingredients") List<String> ingredients,
+        @JsonProperty("ingredients") List<IngredientObject> ingredients,
         @JsonProperty("instructions") List<String> instructions) {
         this.name = name;
         this.portions = portions;
